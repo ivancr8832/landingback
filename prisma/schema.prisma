@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MYSQL_URL")
+}
+
+model BLOG {
+  BLO_ID          Int              @id @default(autoincrement())
+  BLO_TITLE       String           @db.VarChar(50)
+  BLO_DESCRIPTION String           @db.VarChar(250)
+  BLO_CONTENT     String           @db.Text
+  BLO_IMG_URL1    String           @db.VarChar(500)
+  BLO_IMG_URL2    String           @db.VarChar(500)
+  BLO_STATUS      Int              @default(1)
+  CATEGORIE_BLOG  CATEGORIE_BLOG[]
+}
+
+model CATEGORIE {
+  CAT_ID         Int              @id @default(autoincrement())
+  CAT_TITLE      String           @db.VarChar(20)
+  CAT_STATUS     Int              @default(1)
+  CATEGORIE_BLOG CATEGORIE_BLOG[]
+}
+
+model CATEGORIE_BLOG {
+  CATBL_ID        Int       @id @default(autoincrement())
+  CATBL_CATEGORIE Int
+  CATBL_BLOG      Int
+  CATBL_DAY       Int
+  CATBL_MONTH     Int
+  CATBL_YEAR      Int
+  BLOG            BLOG      @relation(fields: [CATBL_BLOG], references: [BLO_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_categorie_blog_blog")
+  CATEGORIE       CATEGORIE @relation(fields: [CATBL_CATEGORIE], references: [CAT_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_categorie_blog_categorie")
+
+  @@index([CATBL_BLOG], map: "fk_categorie_blog_blog_idx")
+  @@index([CATBL_CATEGORIE], map: "fk_categorie_blog_categorie_idx")
+}
+
+model CONTACT {
+  CON_ID           Int       @id @default(autoincrement())
+  CON_NAME         String    @db.VarChar(50)
+  CON_LASTNAME     String    @db.VarChar(50)
+  CON_EMAIL        String    @db.VarChar(70)
+  CON_PHONE        String    @db.VarChar(20)
+  CON_ADDRESS      String?   @db.VarChar(300)
+  CON_DATE_VISIT   DateTime? @db.DateTime(0)
+  CON_HOUR         String?   @db.VarChar(6)
+  CON_SUBJECT      String?   @db.VarChar(100)
+  CON_MESSAGE      String?   @db.VarChar(260)
+  CON_TYPE_CONTACT Int
+  CON_STATUS       Int       @default(1)
+}
+
+model VIDEO {
+  VID_ID     Int    @id @default(autoincrement())
+  VID_URL    String @db.VarChar(80)
+  VID_STATUS Int    @default(1)
+}
